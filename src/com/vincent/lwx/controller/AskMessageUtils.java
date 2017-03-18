@@ -30,13 +30,40 @@ public class AskMessageUtils {
 		map.put("phoneNum", phone);
 		map.put("status", "0");
 		SqlSession sqlSession = MyBatisUtils.getSqlSession();
-		List<AskMessage> listMsg = sqlSession.selectList(sql, phone);
+		List<AskMessage> listMsg = sqlSession.selectList(sql, map);
 		if(listMsg!=null&listMsg.size()>0){
 			System.out.println(AskMessageUtils.class.getName()+" 有未发送消息");
 			return listMsg;
 		}else{
 			System.out.println(AskMessageUtils.class.getName()+" 没有未发送消息");
 			return null;
+		}
+	}
+	
+	/**
+	 * 修改ASK消息状态 基本上是由0改为1
+	 * @param data
+	 * @return true 正常状态 false 异常状态
+	 */
+	public static boolean alterListAskMsgStatus(List<AskMessage> data){
+		try{
+			String sql = "com.vincent.lwx.dao.ChatMapping.alterAskMsgStatus";
+			for(AskMessage ask:data){
+				
+				Map<String, String> map = new HashMap<>();
+				map.put("phoneNum", ask.getPhoneNum());
+				map.put("fromPhone", ask.getFromPhone());
+				map.put("msgContent", ask.getMsgContent());
+				
+				SqlSession sqlSession = MyBatisUtils.getSqlSession();
+				sqlSession.update(sql, map);
+				MyBatisUtils.commitTask(sqlSession);
+				
+			}
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 	

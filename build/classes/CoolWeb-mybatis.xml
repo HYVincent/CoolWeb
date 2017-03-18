@@ -22,6 +22,7 @@
 	    <mapper resource="com/vincent/lwx/dao/RoomMapping.xml"/>
 	    <mapper resource="com/vincent/lwx/dao/UserDiaryMapping.xml"/>
 	    <mapper resource="com/vincent/lwx/dao/UserMapping.xml"/>
+	    <mapper resource="com/vincent/lwx/dao/FamiliesMapping.xml"/>
 	</mappers>
 	
 </configuration>

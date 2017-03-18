@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vincent.lwx.bean.Families;
 import com.vincent.lwx.bean.ServiceStatus;
 import com.vincent.lwx.bean.User;
 import com.vincent.lwx.db.MyBatisUtils;
@@ -35,7 +36,7 @@ public class ChatController {
 
 
 	/**
-	 * 查找家人
+	 * 查找用户
 	 * @param myself_phone
 	 * @param ask_phone
 	 * @param request
@@ -45,7 +46,7 @@ public class ChatController {
 	public void findFamily(@RequestParam("ask_phone")String ask_phone,
 			HttpServletRequest request,HttpServletResponse response){
 		try{
-			String sql = "com.vincent.lwx.dao.ChatMapping.searchFamily";
+			String sql = "com.vincent.lwx.mapping.UserMapping.selectUser";
 			SqlSession sqlSession = MyBatisUtils.getSqlSession();
 //			List<User> listUser = sqlSession.selectList(sql, ask_phone);
 			User user =  sqlSession.selectOne(sql, ask_phone);
@@ -61,9 +62,120 @@ public class ChatController {
 		}
 	}
 	
+	/**
+	 * 同意添加到家人列表 注意的是两边都要加进去
+	 * @param phone 我自己的手机，
+	 * @param familyPhone 家人的手机
+	 * @param msgContent 验证消息的内容
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "addFamilyToList",method = RequestMethod.POST)
+	public void agreeAddFamily(@RequestParam("phone")String phone,@RequestParam("familyPhone")String familyPhone,
+			@RequestParam("msgContent")String msgContent,HttpServletRequest request,HttpServletResponse response){
+		try{
+			//先把ASK消息的状态改了
+			String alterRemark = "com.vincent.lwx.dao.ChatMapping.alterAskMsgAgreeAddStatus";
+			Map<String, String> map = new HashMap<>();
+			map.put("phoneNum", phone);
+			map.put("fromPhone", familyPhone);
+			map.put("msgContent", msgContent);
+			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			sqlSession.update(alterRemark, map);
+			MyBatisUtils.commitTask(sqlSession);
+			//添加到家人列表，注意两边都要添加进去，不然一边看不到
+			String add = "com.vincent.lwx.dao.ChatMapping.addFamilyToFamilyList";
+			Families f = new Families();
+			f.setPhone(phone);
+			f.setFamilyPhone(familyPhone);
+			f.setRemark(familyPhone);
+			f.setTime(DateUtils.getCurrentTimeStr());
+			Families f2 = new Families();
+			f.setPhone(familyPhone);
+			f.setFamilyPhone(phone);
+			f.setRemark(phone);
+			f.setTime(DateUtils.getCurrentTimeStr());
+			SqlSession sqlSession2 = MyBatisUtils.getSqlSession();
+			sqlSession2.insert(add, f);
+			sqlSession2.insert(add, f2);
+			MyBatisUtils.commitTask(sqlSession2);
+			//添加完毕之后查询一下
+			if(getFamilyOne(phone,familyPhone)!=null){
+				//添加成功
+				ResponseUtils.renderJsonDataSuccess(response, "已添加");
+			}else{
+				//添加失败
+				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "添加失败");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
+		}
+	}
+	
 	
 	/**
-	 * 发送验证消息给对方请求添加好友
+	 * 获取家人列表
+	 * @param phone
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "getAllFamilyList",method = RequestMethod.POST)
+	public void getAllFamily(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
+		try{
+			List<Families> data = getFamilyAll(phone);
+			if(data!=null &data.size()>0){
+				ResponseUtils.renderJsonDataSuccess(response, "已获取", data);
+			}else{
+				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "没有数据");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
+		}
+	}
+	
+	
+	/**
+	 * 查询家人
+	 * @param phone
+	 * @param familyPhone
+	 * @return
+	 * @throws Exception
+	 */
+	public Families getFamilyOne(String phone,String familyPhone) throws Exception{
+		String sql = "com.vincent.lwx.dao.FamiliesMapping.selectFamilyOne";
+		Map<String, String> map = new HashMap<>();
+		map.put("phone", phone);
+		map.put("familyPhone", familyPhone);
+		SqlSession sqlSession = MyBatisUtils.getSqlSession();
+		Families f = sqlSession.selectOne(sql, map);
+		if(f!=null){
+			return f;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * 获取家人列表
+	 * @param phone
+	 * @return
+	 */
+	public List<Families> getFamilyAll(String phone) throws Exception{
+		String sql = "com.vincent.lwx.dao.FamiliesMapping.selectFamilyAll";
+		SqlSession sqlSession = MyBatisUtils.getSqlSession();
+		List<Families> data = sqlSession.selectList(sql, phone);
+		MyBatisUtils.commitTask(sqlSession);
+		if(data != null&data.size()>0){
+			return data;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * 发送验证消息给对方请求添加好友  保存的是被动方接受方的消息
 	 * @param myself_phone 我
 	 * @param ask_phone 请求添加的对方
 	 * @param request
@@ -71,14 +183,16 @@ public class ChatController {
 	 * @param msgContent 内容
 	 */
 	@RequestMapping(value = "sendVerifyMsgToFamily",method = RequestMethod.POST)
-	public void sendVerifyMsgToFamily(@RequestParam("myself_phone")String myself_phone,@RequestParam("ask_phone")String ask_phone,@RequestParam("msgContent")String msgContent,HttpServletRequest request,HttpServletResponse response){
+	public void sendVerifyMsgToFamily(@RequestParam("myself_phone")String myself_phone,
+			@RequestParam("ask_phone")String ask_phone,@RequestParam("msgContent")String msgContent,HttpServletRequest request,HttpServletResponse response){
 		try{
 			if(selectItemAskMsg(ask_phone, myself_phone, msgContent)!=null){
 				//说明之前发过
 				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "修改内容重试，换一个吧");
 				return;
 			}
-			//注意，askmsg是相对于接收方来说的 和接口请求的号码是相反的
+			//注意，askmsg是相对于接收方来说的 和接口请求的号码是相反的 
+			//TODO 消息应该两边都保存 现在保存的作为被动接受方的，主动发送方的没有保存
 			AskMessage askMessage = new AskMessage();
 			askMessage.setFromPhone(myself_phone);
 			askMessage.setMsgContent(msgContent);
@@ -99,8 +213,11 @@ public class ChatController {
 				System.out.println("status:"+askMessage.getStatus());
 				if(askMessage.getStatus().equals("1")){
 					PushServer.push(askMessage);
-				}else{
 					ResponseUtils.renderJsonDataSuccess(response, "请求已发送");
+				}else{
+					System.out.println("不在线，等在在线再发送");
+					ResponseUtils.renderJsonDataSuccess(response, "请求已发送");
+					ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "对方不在线，消息将在对方登录的时候发送");
 				}
 			}else{
 				//保存失败
