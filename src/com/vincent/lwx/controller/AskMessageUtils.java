@@ -19,6 +19,11 @@ import com.vincent.lwx.netty.msg.AskMessage;
 */
 public class AskMessageUtils {
 	
+	public static void main(String[] args) {
+		List<AskMessage> data = selectNoSendAskMsg("18696855784");
+		alterListAskMsgStatus(data);
+	}
+	
 	/**
 	 * 查询是否存在我不在线等的时候别人发给我的验证消息
 	 * @param phone
@@ -32,7 +37,7 @@ public class AskMessageUtils {
 		SqlSession sqlSession = MyBatisUtils.getSqlSession();
 		List<AskMessage> listMsg = sqlSession.selectList(sql, map);
 		if(listMsg!=null&listMsg.size()>0){
-			System.out.println(AskMessageUtils.class.getName()+" 有未发送消息");
+			System.out.println(AskMessageUtils.class.getName()+" 有未发送消息,有"+listMsg.size()+"条");
 			return listMsg;
 		}else{
 			System.out.println(AskMessageUtils.class.getName()+" 没有未发送消息");
@@ -45,20 +50,21 @@ public class AskMessageUtils {
 	 * @param data
 	 * @return true 正常状态 false 异常状态
 	 */
-	public static boolean alterListAskMsgStatus(List<AskMessage> data){
+	public static boolean alterListAskMsgStatus(List<AskMessage> askData){
 		try{
 			String sql = "com.vincent.lwx.dao.ChatMapping.alterAskMsgStatus";
-			for(AskMessage ask:data){
+			Map<String, String> map = new HashMap<>();
+			//TODO  这里类型转换异常，具体原因未知..
+			System.out.println(askData.get(1).getPhoneNum());
+			for(int i=0;i<askData.size();i++){
 				
-				Map<String, String> map = new HashMap<>();
-				map.put("phoneNum", ask.getPhoneNum());
-				map.put("fromPhone", ask.getFromPhone());
-				map.put("msgContent", ask.getMsgContent());
+				map.put("phoneNum", askData.get(i).getPhoneNum());
+				map.put("fromPhone", askData.get(i).getFromPhone());
+				map.put("msgContent", askData.get(i).getMsgContent());
 				
 				SqlSession sqlSession = MyBatisUtils.getSqlSession();
 				sqlSession.update(sql, map);
 				MyBatisUtils.commitTask(sqlSession);
-				
 			}
 			return true;
 		}catch(Exception e){

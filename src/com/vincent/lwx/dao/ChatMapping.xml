@@ -22,7 +22,7 @@
     </update>
     
     <!-- 修改ASK消息的状态  这里的状态是是否已推送的状态-->
-    <update id="alterAskMsgStatus" parameterType="Map">
+    <update id="alterAskMsgStatus" parameterType="java.util.Map">
     	update from ask_msg set status where phoneNum = #{phoneNum} and fromPhone = #{fromPhone} and msgContent = #{msgContent}
     </update>
     
@@ -33,7 +33,7 @@
     </select>
     
     <!-- 获取所有的待通过请求添加我为好友待发送的消息 -->
-    <select id="selectNoSendAskMsg" parameterType="Map" resultType="Map">
+    <select id="selectNoSendAskMsg" parameterType="Map" resultType="java.util.Map">
         select * from ask_msg where phoneNum = #{phoneNum} and status = #{status}
     </select>
 </mapper>

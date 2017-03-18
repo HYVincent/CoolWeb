@@ -1,6 +1,7 @@
 package com.vincent.lwx.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,9 +91,6 @@ public class UserController {
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User user = getUserPhone(phone);
-			System.out.println("打印日志");
-//			logger.debug(user);
-			System.out.println("打印结束");
 			if (user != null) {
 				// 登录
 				if (user.getPassword().equals(password)) {
@@ -231,6 +229,30 @@ public class UserController {
 		
 	}
 
+	/**
+	 * 模糊查询用户信息
+	 * @param phone
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "searchUserLike",method = RequestMethod.POST)
+	public void searchUserLike(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
+		try {
+			String sql = "com.vincent.lwx.mapping.UserMapping.searchLikeFamily";
+			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			List<User> data = sqlSession.selectList(sql, phone+"%");
+			MyBatisUtils.commitTask(sqlSession);
+			if(data == null){
+				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "没有数据");
+			}else{
+				ResponseUtils.renderJsonDataSuccess(response, "已找到如下数据",data);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
+		}
+	}
+	
 	/**
 	 * 根据手机号码用户，若存在返回User对象，不存在则返回null
 	 * 

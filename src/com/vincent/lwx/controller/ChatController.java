@@ -124,10 +124,10 @@ public class ChatController {
 	public void getAllFamily(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
 		try{
 			List<Families> data = getFamilyAll(phone);
-			if(data!=null &data.size()>0){
-				ResponseUtils.renderJsonDataSuccess(response, "已获取", data);
-			}else{
+			if(data == null){
 				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "没有数据");
+			}else{
+				ResponseUtils.renderJsonDataSuccess(response, "已获取", data);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -162,14 +162,22 @@ public class ChatController {
 	 * @param phone
 	 * @return
 	 */
-	public List<Families> getFamilyAll(String phone) throws Exception{
-		String sql = "com.vincent.lwx.dao.FamiliesMapping.selectFamilyAll";
-		SqlSession sqlSession = MyBatisUtils.getSqlSession();
-		List<Families> data = sqlSession.selectList(sql, phone);
-		MyBatisUtils.commitTask(sqlSession);
-		if(data != null&data.size()>0){
-			return data;
-		}else{
+	public List<Families> getFamilyAll(String phone){
+		try{
+			String sql = "com.vincent.lwx.dao.FamiliesMapping.selectFamilyAll";
+			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			List<Families> data = sqlSession.selectList(sql, phone);
+			MyBatisUtils.commitTask(sqlSession);
+			if(data != null&data.size()>0){
+				System.out.println("getFamilyAll--有数据");
+				return data;
+			}else{
+				System.out.println("getFamilyAll--没有数据");
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println("getFamilyAll--获取家人列表异常了");
 			return null;
 		}
 	}

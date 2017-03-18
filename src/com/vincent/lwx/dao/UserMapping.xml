@@ -38,4 +38,9 @@
         select * from user where phone = #{phone}
     </select>
     
+    <!-- 模糊查询用户 -->
+    <select id="searchLikeFamily" parameterType="String" resultType="Map">
+    	select * from user where phone like #{phone}
+    </select>
+    
 </mapper>

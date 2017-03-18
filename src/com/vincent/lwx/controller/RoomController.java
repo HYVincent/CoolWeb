@@ -139,10 +139,10 @@ public class RoomController {
 		Room room = sqlSession.selectOne(sql, map);
 //		logger.debug(room);
 		if(room != null){
-//			System.out.println("存在");
+			System.out.println("存在");
 			return true ;
 		}else{
-//			System.out.println("不存在");
+			System.out.println("不存在");
 			return false;
 		}
 	}
