@@ -1,0 +1,90 @@
+2017年3月3日18:31:53
+CREATE DETABASE cool;
+//创建数据库并指定字符编码集
+CREATE DATABASE cool DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+
+//创建表
+create table user(
+user_id int(10) not null primary key auto_increment,
+phone varchar(11) not null,
+password varchar(16) not null,
+nickname varchar(36) default 'Welcome',
+head varchar(50),
+sex varchar(3) default '男',
+birthday varchar(10) default '1992-01-01',
+live_status varchar(255) default '说点什么吧',
+createTime varchar(20) 
+)engine = InnoDB default charset=utf8;
+
+//限制最小id=10000
+ alter table user AUTO_INCREMENT=10000;设置已经存在的表的默认值
+//限制手机号码唯一性
+alter table user add unique(phone); 字段值唯一性约束
+
+
+insert into user(phone,password) values(
+'18696855784',
+'555555');
+
+//一次修改多条记录
+update user set nickname='julie',head='ff',sex='女',birthday='1992-10-10',live_status='今天在图书馆看书' where phone = '18290258163';
+
+数据库死锁
+SET GLOBAL innodb_lock_wait_timeout = 5000; 
+SET innodb_lock_wait_timeout = 5000; 
+
+用户日记表
+create table userdiary(
+user_id int(10) not null,
+diaryTitle varchar(20) not null,
+diaryContent varchar(255) not null,
+diaryTime varchar(20) not null) engine = InnoDB default charset=utf8;
+
+用户反馈表
+create table feedback(
+phone varchar(11) not null,
+title varchar(30) not null,
+content varchar(255) not null,
+createTime varchar(20) not null) engine = InnoDB default charset=utf8;
+
+insert into feedback(phone,title,content,createTime) values('18696855784','fsfs','fffff','2017-03-08 00:46');
+
+房间表
+create table room(
+id int(10) not null primary key auto_increment,
+phone varchar(11) not null,
+roomName varchar(20) not null,
+roomType varchar(6) not null,
+roomImg varchar(255) not null,
+roomBigImg varchar(1000) not null
+)engine = InnoDB default charset=utf8;
+
+insert into room(id,phone,roomName,roomType,roomImg,roomBigImg) values(
+1489544312,
+'18696855784',
+'我的房间',
+'卧室',
+'xxxxxxxxxxxxx.jpg',
+'ffffffffffffffffffffffffffffffffffffff.jpg');
+
+/storage/emulated/0/DCIM/Camera/maimai/p_maimai_p_2421_7879_116_813xjtdumf3v1t.jpg
+
+
+create table app(
+id int(10) not null primary key auto_increment,
+version varchar(20) not null,
+updateDesc  varchar(100) not null,
+downUrl varchar(100) not null,
+releaseDate varchar(30) not null
+) engine = InnoDB default charset = utf8;
+
+
+insert into app(version,updateDesc,downUrl,releaseDate) values(
+'1.0.2',
+'我就生个级',
+'http://182.254.232.121:8080/app-huawei-release.apk',
+'2017-3-16 12:42'
+);
+
+
+查询数据库APP最新版本：select * from app where id =(select MAX(id) from app);

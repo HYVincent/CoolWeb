@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>CoolWeb</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+
+	<!-- <listener> <listener -class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class> 
+		</listener> -->
+
+	<listener>
+		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+	</listener>
+	<filter>
+		<filter-name>log4jServletFilter</filter-name>
+		<filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>log4jServletFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+
+
+	<servlet>
+		<servlet-name>CoolWeb</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<!-- <param-value>classpath:application-context.xml</param-value> -->
+			<param-value>classpath:CoolWeb-servlet.xml</param-value>
+		</init-param><!-- classpath：只会到你的class路径中查找找文件; classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找. -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- 如果不配置servlet-mapping服务器就无法响应/ -->
+	<servlet-mapping>
+		<servlet-name>CoolWeb</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+
+
+	<listener>
+		<display-name>NettyServerBootstrapListener</display-name>
+		<listener-class>com.vincent.lwx.netty.NettyServerBootstrapListener</listener-class>
+	</listener>
+
+
+</web-app>

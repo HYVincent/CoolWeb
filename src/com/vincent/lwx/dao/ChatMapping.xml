@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vincent.lwx.dao.ChatMapping">
+    
+    <!-- 模糊查询 没有测试 -->
+    <select id="findUser" parameterType="String" resultType="Map">
+         select * from user where phone LIKE #{ask_phone}%
+    </select>
+    
+    <!-- 精确搜索 -->
+    <select id="searchFamily" parameterType="String" resultType="com.vincent.lwx.bean.User">
+        select * from user where phone = #{ask_phone}
+    </select>
+    
+    <!-- 保存添加消息到数据库 -->
+    <insert id="saveAskMsg" parameterType="com.vincent.lwx.netty.msg.AskMessage">
+    	insert into ask_msg(phoneNum,fromPhone,msgContent,remark,type,status,time) values (
+    		#{phoneNum},
+    		#{fromPhone},
+    		#{msgContent},
+    		#{remark},
+    		#{type},
+    		#{status},
+    		#{time}
+    	)    
+    </insert>
+    
+    <!-- 查询某一条验证消息 -->
+    <select id="selectItemAskMsg" parameterType="Map"
+        resultType="com.vincent.lwx.netty.msg.AskMessage">
+        select * from ask_msg where phoneNum = #{phoneNum} and fromPhone = #{fromPhone} and msgContent = #{msgContent}
+    </select>
+    
+    <!-- 获取所有的待通过请求添加我为好友待发送的消息 -->
+    <select id="selectNoSendAskMsg" parameterType="Map" resultType="Map">
+        select * from ask_msg where phoneNum = #{phoneNum} and status = #{status}
+    </select>
+</mapper>

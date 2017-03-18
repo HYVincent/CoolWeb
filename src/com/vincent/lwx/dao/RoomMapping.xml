@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vincent.lwx.mapping.RoomMapping">
+    
+    
+    <!-- 添加房间 -->
+    <insert id="insertRoom" parameterType="com.vincent.lwx.bean.Room">
+        insert into room(phone,roomName,roomType,roomImg,roomBigImg) values(
+        	#{phone},
+        	#{roomName},
+        	#{roomType},
+        	#{roomImg},
+        	#{roomBigImg}
+        )
+    </insert>
+    
+   <!-- 删除房间 -->
+   <delete id="deleteRoomItem" parameterType="Map">
+       delete from room where roomName = #{roomName} and phone = #{phone}
+   </delete>
+   
+  
+   <!-- 根据ID查询房间 -->
+   <select id="selectRoomItem" parameterType="Map"
+      	resultType="com.vincent.lwx.bean.Room">
+       select * from room where roomName = #{roomName} and phone = #{phone}
+   </select>
+   
+   <!-- 获取用户的所有的房间 -->
+   <select id="selectAllRoom" parameterType="String" resultType="Map">
+       select * from room where phone = #{phone}
+   </select>
+  
+    
+    
+</mapper>

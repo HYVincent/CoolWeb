@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vincent.lwx.dao.AppMapping">
+    
+    <!-- 插入一个版本 -->
+    <insert id="insertVersion" parameterType="com.vincent.lwx.bean.App">
+        insert into app(version,updateDesc,downUrl,releaseDate) values(
+    		#{version},
+    		#{updateDesc},
+    		#{downUrl},
+    		#{releaseDate}    	
+        )
+    </insert>
+    
+    <!-- 获取数据库最新版本 -->
+    <select id="getNewestVersion" resultType="com.vincent.lwx.bean.App">
+        select * from app where id=(select MAX(id) from app)
+    </select>
+    
+    
+    <!-- 删除指定id的记录 -->
+    <delete id="deleteVersionId" parameterType="Integer">
+        delete from app where id = #{id}
+    </delete>
+    
+</mapper>
