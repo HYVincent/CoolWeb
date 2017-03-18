@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +31,7 @@ import com.vincent.lwx.util.ResponseUtils;
 @Controller
 public class UserController {
 
-	private static final Logger logger = LogManager.getLogger(UserController.class);
+//	private static final Logger logger = LogManager.getLogger(UserController.class);
 
 	/**
 	 * 注册
@@ -92,7 +90,9 @@ public class UserController {
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User user = getUserPhone(phone);
-			logger.debug(user);
+			System.out.println("打印日志");
+//			logger.debug(user);
+			System.out.println("打印结束");
 			if (user != null) {
 				// 登录
 				if (user.getPassword().equals(password)) {
@@ -171,12 +171,12 @@ public class UserController {
 			Map<String, String> map = new HashMap<>();
 			map.put("phone", phone);
 			map.put("password", password);
-			logger.debug(map);
+//			logger.debug(map);
 			SqlSession sqlSession = MyBatisUtils.getSqlSession();
 			sqlSession.update(sql, map);
 			MyBatisUtils.commitTask(sqlSession);
 			User user = getUserPhone(phone);
-			logger.debug(user);
+//			logger.debug(user);
 			if(user.getPassword().equals(password)){
 				//重置密码成功
 				ResponseUtils.renderJsonDataSuccess(response, "重置密码成功");
@@ -209,7 +209,7 @@ public class UserController {
 				Map<String, String> map = new HashMap<>();
 				map.put("phone", phone);
 				map.put("password", new_password);
-				logger.debug(map);
+//				logger.debug(map);
 				SqlSession sqlSession = MyBatisUtils.getSqlSession();
 				sqlSession.update(sql, map);
 				MyBatisUtils.commitTask(sqlSession);
@@ -244,7 +244,7 @@ public class UserController {
 		session.commit();
 		session.clearCache();
 		session.close();
-		logger.debug(user);
+//		logger.debug(user);
 		if (user != null) {
 			// 用户已存在
 			return user;

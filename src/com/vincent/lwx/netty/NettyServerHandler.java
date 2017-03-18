@@ -3,8 +3,6 @@ package com.vincent.lwx.netty;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import com.vincent.lwx.controller.AskMessageUtils;
 import com.vincent.lwx.netty.msg.AskMessage;
@@ -25,7 +23,7 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
 
-	private static final Logger logger = LogManager.getLogger(NettyServerHandler.class);
+//	private static final Logger logger = LogManager.getLogger(NettyServerHandler.class);
 	
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
@@ -51,7 +49,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
             	System.out.println("用户  "+loginMsg.getPhoneNum()+":登录成功");
             	NettyChannelMap.add(loginMsg.getPhoneNum(), (SocketChannel) channelHandlerContext.channel());
             	SocketChannel s = (SocketChannel) NettyChannelMap.get(loginMsg.getPhoneNum());
-				logger.info("client" + loginMsg.getPhoneNum() + " 登录成功");
 				//TODO 当用户登录成功的时候应该检查数据库是否有未推送的消息 如果有，就推送
 				List<AskMessage> data = AskMessageUtils.selectNoSendAskMsg(loginMsg.getPhoneNum());
 				if(data!=null){

@@ -3,9 +3,6 @@ package com.vincent.lwx.netty;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,7 +18,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  */
 public class NettyServerBootstrapListener implements ServletContextListener{
 	
-	private static final Logger logger = LogManager.getLogger(NettyServerBootstrapListener.class);
+//	private static final Logger logger = LogManager.getLogger(NettyServerBootstrapListener.class);
 
 	public void contextInitialized(ServletContextEvent sce) {
 		EventLoopGroup boss = new NioEventLoopGroup();
@@ -55,9 +52,9 @@ public class NettyServerBootstrapListener implements ServletContextListener{
 		}
 		if (f.isSuccess()) {
 			System.out.println("netty server start success!");
-			logger.debug("netty service start is success");
+//			logger.debug("netty service start is success");
 		}else{
-			logger.debug("netty service start error,please check code!");
+//			logger.debug("netty service start error,please check code!");
 			System.out.println("netty service start error,please check code!");
 		}
 	}
