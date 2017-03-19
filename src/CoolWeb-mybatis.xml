@@ -10,7 +10,7 @@
 	                <!-- 注意3306后面是数据库名称 autoReconnect表示自动重连 -->
 	                <property name="url" value="jdbc:mysql://localhost:3306/cool?useUnicode=true&amp;charcterEncoding=utf-8&amp;useSSL=false&amp;autoReconnect=true"/>
 	                <property name="username" value="root"/>
-	                <property name="password" value="19921010zyl/"/>
+	                <property name="password" value="root"/>
 	            </dataSource>
 	    </environment>
 	</environments>

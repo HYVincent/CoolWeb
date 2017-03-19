@@ -23,6 +23,8 @@ import com.vincent.lwx.netty.msg.MsgType;
 import com.vincent.lwx.util.DateUtils;
 import com.vincent.lwx.util.ResponseUtils;
 
+import lombok.Data;
+
 /**   
 * @Title: ChatController.java 
 * @Package com.vincent.lwx.controller 
@@ -63,6 +65,51 @@ public class ChatController {
 	}
 	
 	/**
+	 * 向对方发起添加请求
+	 * @param phone
+	 * @param ask_phone
+	 * @param msgContent
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "sendAddFamilyQuest",method = RequestMethod.POST)
+	public void sendAddFamilyQuest(@RequestParam("phone")String phone,@RequestParam("ask_phone")String ask_phone,
+			@RequestParam("msgContent")String msgContent,HttpServletRequest request,HttpServletResponse response){
+		try {
+			AskMessage askMessage = new AskMessage();
+			askMessage.setFromPhone(phone);
+			askMessage.setPhoneNum(ask_phone);
+			askMessage.setRemark("0");
+			askMessage.setMsgContent(msgContent);
+			askMessage.setType(MsgType.ASK);
+			askMessage.setTime(DateUtils.getCurrentTimeStr());
+			if(PushServer.hasPhone(ask_phone)){
+				System.out.println("在线，发过去");
+				askMessage.setStatus("1");
+			}else{
+				System.out.println("不在线");
+				askMessage.setStatus("0");
+			}
+			//保存起来
+			if(saveAskMsg(askMessage)){
+				System.out.println("已保存");
+			}else{
+				System.out.println("保存失败");
+			}
+			if(askMessage.getStatus().equals("1")){
+				//开始推送消息
+				PushServer.push(askMessage);
+			}
+			ResponseUtils.renderJsonDataSuccess(response, "请求已发送");
+		} catch (Exception e) {
+			e.printStackTrace();
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
+		}
+	}
+	
+	
+	/**
+	 * 这是被添加
 	 * 同意添加到家人列表 注意的是两边都要加进去
 	 * @param phone 我自己的手机，
 	 * @param familyPhone 家人的手机
@@ -74,15 +121,19 @@ public class ChatController {
 	public void agreeAddFamily(@RequestParam("phone")String phone,@RequestParam("familyPhone")String familyPhone,
 			@RequestParam("msgContent")String msgContent,HttpServletRequest request,HttpServletResponse response){
 		try{
-			//先把ASK消息的状态改了
+			//先把ASK消息的状态改了 异常，暂时放弃
+			/*System.out.println("familyPhone-->"+familyPhone);
 			String alterRemark = "com.vincent.lwx.dao.ChatMapping.alterAskMsgAgreeAddStatus";
 			Map<String, String> map = new HashMap<>();
 			map.put("phoneNum", phone);
 			map.put("fromPhone", familyPhone);
 			map.put("msgContent", msgContent);
+//			AskMessage  a =selectItemAskMsg(phone, familyPhone, msgContent);
+//			System.out.println("phoneNum-->"+a.getPhoneNum() +" FromPhone-->"+ a.getFromPhone());
 			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			System.out.println("map.fromPhone="+map.get("fromPhone"));
 			sqlSession.update(alterRemark, map);
-			MyBatisUtils.commitTask(sqlSession);
+			MyBatisUtils.commitTask(sqlSession);*/
 			//添加到家人列表，注意两边都要添加进去，不然一边看不到
 			String add = "com.vincent.lwx.dao.ChatMapping.addFamilyToFamilyList";
 			Families f = new Families();
@@ -91,10 +142,10 @@ public class ChatController {
 			f.setRemark(familyPhone);
 			f.setTime(DateUtils.getCurrentTimeStr());
 			Families f2 = new Families();
-			f.setPhone(familyPhone);
-			f.setFamilyPhone(phone);
-			f.setRemark(phone);
-			f.setTime(DateUtils.getCurrentTimeStr());
+			f2.setPhone(familyPhone);
+			f2.setFamilyPhone(phone);
+			f2.setRemark(phone);
+			f2.setTime(DateUtils.getCurrentTimeStr());
 			SqlSession sqlSession2 = MyBatisUtils.getSqlSession();
 			sqlSession2.insert(add, f);
 			sqlSession2.insert(add, f2);

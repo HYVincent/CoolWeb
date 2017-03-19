@@ -51,7 +51,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
             	SocketChannel s = (SocketChannel) NettyChannelMap.get(loginMsg.getPhoneNum());
 				//TODO 当用户登录成功的时候应该检查数据库是否有未推送的消息 如果有，就推送
 				List<AskMessage> data = AskMessageUtils.selectNoSendAskMsg(loginMsg.getPhoneNum());
-				if(data!=null&data.size()>0){
+				if(data!=null){
 //					s.writeAndFlush(data);
 					for(int i = 0;i<data.size();i++){
 						s.writeAndFlush(data.get(i));
