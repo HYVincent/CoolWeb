@@ -45,6 +45,7 @@ public class RoomController {
 	@RequestMapping(value = "addRoom",method = RequestMethod.POST)
 	public void addRoom(@RequestParam("phone")String phone,@RequestParam("roomType")String roomType,@RequestParam("roomName")String roomName,
 			@RequestParam("roomImg")String roomImg,@RequestParam("roomBigImg")String roomBigImg,HttpServletRequest request,HttpServletResponse response){
+		SqlSession sqlSession = null;
 		try{
 			if(getRoomOne(phone, roomName)){
 				//已存在，改名字
@@ -58,7 +59,7 @@ public class RoomController {
 			room.setRoomImg(roomImg);
 			room.setRoomBigImg(roomBigImg);
 			String sql = "com.vincent.lwx.mapping.RoomMapping.insertRoom";
-			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			sqlSession = MyBatisUtils.getSqlSession();
 			sqlSession.insert(sql, room);
 			MyBatisUtils.commitTask(sqlSession);
 			Room r = getRoomOne2(phone, roomName);
@@ -69,6 +70,10 @@ public class RoomController {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			if(sqlSession!=null){
+				sqlSession.clearCache();
+				sqlSession.close();
+			}
 			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
 		}
 	}

@@ -57,10 +57,5 @@
 		<listener-class>com.vincent.lwx.netty.NettyServerBootstrapListener</listener-class>
 	</listener>
 
-	<!-- <listener>
-    	<listener-class>
-        	org.springframework.web.context.ContextLoaderListener
-    	</listener-class>
-	</listener> -->
 
 </web-app>

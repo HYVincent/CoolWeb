@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.vincent.lwx.netty.msg.AskMessage;
+import com.vincent.lwx.netty.msg.ChatMsg;
 import com.vincent.lwx.netty.msg.LoginMsg;
 import com.vincent.lwx.netty.msg.PushMsg;
 
@@ -36,6 +37,24 @@ public class PushServer {
         	throw new NullPointerException("请检查服务器代码，channel object is null");
         	
         }
+    }
+    
+    /** 相当于是给自己推送消息
+     * 聊天消息推送
+     * @param chatMsg
+     */
+    public static boolean push(ChatMsg chatMsg){
+    	 SocketChannel channel = NettyChannelMap.get(chatMsg.getPhoneNum());
+         System.out.println("phone->"+chatMsg.getPhoneNum());
+         if (channel != null) {
+         	System.out.println("channel not null，开始推送");
+             channel.writeAndFlush(chatMsg);
+             return true;
+         }else{
+         	System.out.println("PushServer-->channel is null,please check code;");
+         	System.out.println("这个人不在线，暂时发送不了");
+         	return false;
+         }
     }
     
     /**

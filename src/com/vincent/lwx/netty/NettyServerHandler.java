@@ -7,6 +7,7 @@ import java.util.List;
 import com.vincent.lwx.controller.AskMessageUtils;
 import com.vincent.lwx.netty.msg.AskMessage;
 import com.vincent.lwx.netty.msg.BaseMsg;
+import com.vincent.lwx.netty.msg.ChatMsg;
 import com.vincent.lwx.netty.msg.LoginMsg;
 import com.vincent.lwx.netty.msg.MsgType;
 import com.vincent.lwx.netty.msg.PingMsg;
@@ -82,6 +83,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
             	PushMsg pushMsg=(PushMsg)baseMsg;
             	System.out.println("收到客户端"+pushMsg.getPhoneNum()+"消息:"+":"+pushMsg.getContent());
                 break;
+            case CHAT:
+            	ChatMsg chatMsg = (ChatMsg)baseMsg;
+            	PushServer.push(chatMsg);
+            	break;
             default:
                 System.out.println("default。。");
                 break;

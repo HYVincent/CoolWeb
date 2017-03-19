@@ -19,10 +19,12 @@ import com.vincent.lwx.netty.msg.AskMessage;
 */
 public class AskMessageUtils {
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		List<AskMessage> data = selectNoSendAskMsg("18696855784");
-		alterListAskMsgStatus(data);
-	}
+		if(data != null){
+			alterListAskMsgStatus(data);
+		}
+	}*/
 	
 	/**
 	 * 查询是否存在我不在线等的时候别人发给我的验证消息
@@ -51,26 +53,22 @@ public class AskMessageUtils {
 	 * @return true 正常状态 false 异常状态
 	 */
 	public static boolean alterListAskMsgStatus(List<AskMessage> askData){
-		try{
 			String sql = "com.vincent.lwx.dao.ChatMapping.alterAskMsgStatus";
-			Map<String, String> map = new HashMap<>();
+			final Map<String, String> map = new HashMap<String,String>();
 			//TODO  这里类型转换异常，具体原因未知..
-			System.out.println(askData.get(1).getPhoneNum());
-			for(int i=0;i<askData.size();i++){
+			//System.out.println(askData.get(1).getPhoneNum());
+			for(AskMessage askMessage : askData){
 				
-				map.put("phoneNum", askData.get(i).getPhoneNum());
-				map.put("fromPhone", askData.get(i).getFromPhone());
-				map.put("msgContent", askData.get(i).getMsgContent());
+				map.put("phoneNum", askMessage.getPhoneNum());
+				map.put("fromPhone", askMessage.getFromPhone());
+				map.put("msgContent", askMessage.getMsgContent());
 				
 				SqlSession sqlSession = MyBatisUtils.getSqlSession();
 				sqlSession.update(sql, map);
 				MyBatisUtils.commitTask(sqlSession);
+				
 			}
 			return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
 	}
 	
 }

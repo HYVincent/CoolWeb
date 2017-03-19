@@ -18,14 +18,14 @@
     
     <!-- 修改ASK消息租状态，这里的状态是对方接受添加的状态 -->
     <update id="alterAskMsgAgreeAddStatus" parameterType="java.util.Map">
-    	update ask_msg set remark where phoneNum = #{phoneNum} 
+    	update ask_msg set remark=1 where phoneNum = #{phoneNum} 
     		and fromPhone = #{fromPhone} 
     		and msgContent = #{msgContent}
     </update>
     
     <!-- 修改ASK消息的状态  这里的状态是是否已推送的状态-->
     <update id="alterAskMsgStatus" parameterType="java.util.Map">
-    	update ask_msg set status where phoneNum = #{phoneNum} 
+    	update ask_msg set status=1 where phoneNum = #{phoneNum} 
     		and fromPhone = #{fromPhone} 
     		and msgContent = #{msgContent}
     </update>
@@ -39,7 +39,7 @@
     </select>
     
     <!-- 获取所有的待通过请求添加我为好友待发送的消息 -->
-    <select id="selectNoSendAskMsg" parameterType="Map" resultType="java.util.Map">
+    <select id="selectNoSendAskMsg" parameterType="Map" resultType="com.vincent.lwx.netty.msg.AskMessage">
         select * from ask_msg where phoneNum = #{phoneNum} 
         	and status = #{status}
     </select>

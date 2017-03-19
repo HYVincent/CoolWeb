@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.vincent.lwx.dao.FamiliesMapping">
+<mapper namespace="com.vincent.lwx.dao.FamilyMapping">
 
 	<!-- 添加家人到家人列表 -->
-    <insert id="addFamilyToFamilyList" parameterType="com.vincent.lwx.bean.Families">
+    <insert id="addToFamilyList" parameterType="com.vincent.lwx.bean.Family">
     	insert into family_list(phone,familyPhone,remark,time) values(
     		#{phone},
     		#{familyPhone},
@@ -19,12 +19,12 @@
     </delete>
     
     <!-- 获取某一个信息 -->
-    <select id="selectFamilyOne" parameterType="Map" resultType="com.vincent.lwx.bean.Families">
+    <select id="selectFamilyOne" parameterType="Map" resultType="com.vincent.lwx.bean.Family">
     	select * from family_list where phone = #{phone} and familyPhone = #{familyPhone}
     </select>
     
     <!-- 获取所有 -->
-    <select id="selectFamilyAll" parameterType="String" resultType="Map">
+    <select id="selectFamilyAll" parameterType="String" resultType="com.vincent.lwx.bean.Family">
     	select * from family_list where phone = #{phone}
     </select>
 

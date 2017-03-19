@@ -1,5 +1,7 @@
 package com.vincent.lwx.netty.msg;
 
+import lombok.Data;
+
 /**   
 * @Title: ChatMsg.java 
 * @Package com.vincent.lwx.netty.msg 
@@ -8,6 +10,7 @@ package com.vincent.lwx.netty.msg;
 * @date 2017年3月16日 下午11:43:42 
 * @version V1.0   
 */
+@Data
 public class ChatMsg extends BaseMsg{
 
 	/**
@@ -18,36 +21,19 @@ public class ChatMsg extends BaseMsg{
 	/**
 	 * 表示对方的手机号码
 	 */
-	private String oppositePhone;
+	private String ask_phone;
 	
 	/**
 	 * 聊天的内容
 	 */
-	private String charContent;
-
+	private String chatContent;
 	
-	
-	public String getCharContent() {
-		return charContent;
-	}
+	/**
+	 * 类型，1 表示我发出去的， 0表示别人发给我的
+	 */
+	private String msgType;
 
-	public void setCharContent(String charContent) {
-		this.charContent = charContent;
-	}
 
-	public String getOppositePhone() {
-		return oppositePhone;
-	}
-
-	public void setOppositePhone(String oppositePhone) {
-		this.oppositePhone = oppositePhone;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
-	
 
 }
 

@@ -1,5 +1,7 @@
 package com.vincent.lwx.bean;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /**    
@@ -10,8 +12,14 @@ import lombok.Data;
 * @date 2017年3月18日 下午7:48:29  
 * @version V1.0    
 */
+
 @Data
-public class Families {
+public class Family implements Serializable{
+	
+	/**
+	 * 序列化ID 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * id
