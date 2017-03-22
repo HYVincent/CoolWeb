@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vincent.lwx.dao.SystemMsgMapping">
+
+	<!-- 插入系统消息 -->
+	<insert id="insertMySystemMsg" parameterType="com.vincent.lwx.netty.msg.SystemMsg">
+		insert into systemMsg(phone,msgTitle,msgContent,type,status,time) values(
+			#{phoneNum},
+			#{msgTitle},
+			#{msgContent},
+			#{type},
+			#{status},
+			#{time}
+		)	
+	</insert>
+	
+	<!-- 获取发送给该用户的所有系统消息 -->
+	<select id="getUserAllSystemMsg" parameterType="String" resultType="com.vincent.lwx.netty.msg.SystemMsg">
+		select * from systemMsg where phone = #{phone}
+	</select>
+	
+	<!-- 查询数据库里面的还没有推送的消息 -->
+	<select id="getNoSendSystemMsg" parameterType="Map" resultType="com.vincent.lwx.netty.msg.SystemMsg">
+		select * from systemMsg where phone = #{phone} and status = #{status}
+	</select>
+	
+	<!-- 发送之后修改状态 -->
+	<update id="updateMySystemMsgStatus" parameterType="Map">
+		update systemMsg set status=#{status} where phone = #{phone} and msgTitle = #{msgTitle}
+	</update>
+	
+	<!-- 查询系统消息 -->
+	<select id="selectSystemOne" parameterType="Map" resultType="com.vincent.lwx.netty.msg.SystemMsg">
+		select * from systemMsg where phone = #{phone} and msgTitle = #{msgTitle}
+	</select>
+
+</mapper>

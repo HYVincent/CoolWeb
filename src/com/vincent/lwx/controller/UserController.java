@@ -228,6 +228,23 @@ public class UserController {
 		}
 		
 	}
+	
+	/**
+	 * 获取用户信息
+	 * @param phone
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "getUserInfo",method = RequestMethod.GET)
+	public void getUserInfo(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
+		User user = getUserPhone(phone);
+		if(user!=null){
+			user.setPassword("******");
+			ResponseUtils.renderJsonDataSuccess(response, "获取成功", user);
+		}else{
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "用户信息获取失败");
+		}
+	}
 
 	/**
 	 * 模糊查询用户信息

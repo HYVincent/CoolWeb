@@ -32,17 +32,27 @@ public class AskMessageUtils {
 	 * @return
 	 */
 	public static List<AskMessage> selectNoSendAskMsg(String phone){
-		String sql = "com.vincent.lwx.dao.ChatMapping.selectNoSendAskMsg";
-		Map<String, String> map = new HashMap<>();
-		map.put("phoneNum", phone);
-		map.put("status", "0");
-		SqlSession sqlSession = MyBatisUtils.getSqlSession();
-		List<AskMessage> listMsg = sqlSession.selectList(sql, map);
-		if(listMsg!=null&listMsg.size()>0){
-			System.out.println(AskMessageUtils.class.getName()+" 有未发送消息,有"+listMsg.size()+"条");
-			return listMsg;
-		}else{
-			System.out.println(AskMessageUtils.class.getName()+" 没有未发送消息");
+		SqlSession sqlSession = null;
+		try{
+			String sql = "com.vincent.lwx.dao.ChatMapping.selectNoSendAskMsg";
+			Map<String, String> map = new HashMap<>();
+			map.put("phoneNum", phone);
+			map.put("status", "0");
+			sqlSession = MyBatisUtils.getSqlSession();
+			List<AskMessage> listMsg = sqlSession.selectList(sql, map);
+			if(listMsg!=null&listMsg.size()>0){
+				System.out.println(AskMessageUtils.class.getName()+" 有未发送消息,有"+listMsg.size()+"条");
+				return listMsg;
+			}else{
+				System.out.println(AskMessageUtils.class.getName()+" 没有未发送消息");
+				return null;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if(sqlSession!=null){
+				sqlSession.clearCache();
+				sqlSession.close();
+			}
 			return null;
 		}
 	}

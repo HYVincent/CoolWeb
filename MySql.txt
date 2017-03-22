@@ -1,46 +1,46 @@
-2017Äê3ÔÂ3ÈÕ18:31:53
+2017å¹´3æœˆ3æ—¥18:31:53
 CREATE DETABASE cool;
-//´´½¨Êı¾İ¿â²¢Ö¸¶¨×Ö·û±àÂë¼¯
+//åˆ›å»ºæ•°æ®åº“å¹¶æŒ‡å®šå­—ç¬¦ç¼–ç é›†
 CREATE DATABASE cool DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
 
-//´´½¨±í
+//åˆ›å»ºè¡¨
 create table user(
 user_id int(10) not null primary key auto_increment,
 phone varchar(11) not null,
 password varchar(16) not null,
 nickname varchar(36) default 'Welcome',
 head varchar(50),
-sex varchar(3) default 'ÄĞ',
+sex varchar(3) default 'ç”·',
 birthday varchar(10) default '1992-01-01',
-live_status varchar(255) default 'ËµµãÊ²Ã´°É',
+live_status varchar(255) default 'è¯´ç‚¹ä»€ä¹ˆå§',
 createTime varchar(20) 
 )engine = InnoDB default charset=utf8;
 
-//ÏŞÖÆ×îĞ¡id=10000
- alter table user AUTO_INCREMENT=10000;ÉèÖÃÒÑ¾­´æÔÚµÄ±íµÄÄ¬ÈÏÖµ
-//ÏŞÖÆÊÖ»úºÅÂëÎ¨Ò»ĞÔ
-alter table user add unique(phone); ×Ö¶ÎÖµÎ¨Ò»ĞÔÔ¼Êø
+//é™åˆ¶æœ€å°id=10000
+ alter table user AUTO_INCREMENT=10000;è®¾ç½®å·²ç»å­˜åœ¨çš„è¡¨çš„é»˜è®¤å€¼
+//é™åˆ¶æ‰‹æœºå·ç å”¯ä¸€æ€§
+alter table user add unique(phone); å­—æ®µå€¼å”¯ä¸€æ€§çº¦æŸ
 
 
 insert into user(phone,password) values(
 '18696855784',
 '555555');
 
-//Ò»´ÎĞŞ¸Ä¶àÌõ¼ÇÂ¼
-update user set nickname='julie',head='ff',sex='Å®',birthday='1992-10-10',live_status='½ñÌìÔÚÍ¼Êé¹İ¿´Êé' where phone = '18290258163';
+//ä¸€æ¬¡ä¿®æ”¹å¤šæ¡è®°å½•
+update user set nickname='julie',head='ff',sex='å¥³',birthday='1992-10-10',live_status='ä»Šå¤©åœ¨å›¾ä¹¦é¦†çœ‹ä¹¦' where phone = '18290258163';
 
-Êı¾İ¿âËÀËø
+æ•°æ®åº“æ­»é”
 SET GLOBAL innodb_lock_wait_timeout = 5000; 
 SET innodb_lock_wait_timeout = 5000; 
 
-ÓÃ»§ÈÕ¼Ç±í
+ç”¨æˆ·æ—¥è®°è¡¨
 create table userdiary(
 user_id int(10) not null,
 diaryTitle varchar(20) not null,
 diaryContent varchar(255) not null,
 diaryTime varchar(20) not null) engine = InnoDB default charset=utf8;
 
-ÓÃ»§·´À¡±í
+ç”¨æˆ·åé¦ˆè¡¨
 create table feedback(
 phone varchar(11) not null,
 title varchar(30) not null,
@@ -49,7 +49,7 @@ createTime varchar(20) not null) engine = InnoDB default charset=utf8;
 
 insert into feedback(phone,title,content,createTime) values('18696855784','fsfs','fffff','2017-03-08 00:46');
 
-·¿¼ä±í
+æˆ¿é—´è¡¨
 create table room(
 id int(10) not null primary key auto_increment,
 phone varchar(11) not null,
@@ -62,8 +62,8 @@ roomBigImg varchar(1000) not null
 insert into room(id,phone,roomName,roomType,roomImg,roomBigImg) values(
 1489544312,
 '18696855784',
-'ÎÒµÄ·¿¼ä',
-'ÎÔÊÒ',
+'æˆ‘çš„æˆ¿é—´',
+'å§å®¤',
 'xxxxxxxxxxxxx.jpg',
 'ffffffffffffffffffffffffffffffffffffff.jpg');
 
@@ -81,10 +81,63 @@ releaseDate varchar(30) not null
 
 insert into app(version,updateDesc,downUrl,releaseDate) values(
 '1.0.2',
-'ÎÒ¾ÍÉú¸ö¼¶',
+'æˆ‘å°±ç”Ÿä¸ªçº§',
 'http://182.254.232.121:8080/app-huawei-release.apk',
 '2017-3-16 12:42'
 );
 
 
-²éÑ¯Êı¾İ¿âAPP×îĞÂ°æ±¾£ºselect * from app where id =(select MAX(id) from app);
+æŸ¥è¯¢æ•°æ®åº“APPæœ€æ–°ç‰ˆæœ¬ï¼šselect * from app where id =(select MAX(id) from app);
+
+//æ¨¡ç³ŠæŸ¥è¯¢ï¼ŒåŒ¹é…å‰ä¸¤ä¸ªå­—ç¬¦
+ select * from user where phone LIKE '18%';
+
+åˆ«äººå‘ç»™æˆ‘è¯·æ±‚éªŒè¯çš„æ¶ˆæ¯åˆ—è¡¨
+create table ask_msg(
+phoneNum varchar(11) not null,
+fromPhone varchar(11) not null,
+msgContent varchar(20) not null,
+remark varchar(1) default 0,
+type varchar(10) not null,
+status varchar(1) not null,
+time varchar(20) not null
+)engine = InnoDB default charset = utf8;
+
+insert into ask_msg(phone,from_phone,msgContent,remark,type,status,time) values (       ?,       ?,       ?,       ?,       ?,       ?,       ?      )
+
+create table family_list(
+id int(10) not null primary key auto_increment,
+phone varchar(11) not null,
+familyPhone varchar(11) not null,
+remark varchar(20) not null,
+time varchar(20))engine = InnoDB default charset = utf8;
+
+insert into family_list(phone,familyPhone,remark,time) values(
+'18696855784',
+'18290258163',
+'å°ä¹å„¿',
+'2017-3-17'
+)
+
+update ask_msg set status = 1 where phoneNum = 18696855784 and fromPhone = 18290258163 and msgContent = 'ç™¾åº¦';
+
+//ç»Ÿè®¡appç‰ˆæœ¬åˆ†å¸ƒæƒ…å†µ
+create table versionDetail(
+phone varchar(11) not null,
+version varchar(10) default '1.0.5',
+time varchar(20) not null)engine = InnoDB default charset = utf8;
+
+alter table versionDetail add unique(phone); //çº¦æŸä¸€ä¸ªå·ç åªèƒ½å¯¹åº”ä¸€ä¸ªç‰ˆæœ¬
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,6 +12,8 @@ import com.vincent.lwx.netty.msg.LoginMsg;
 import com.vincent.lwx.netty.msg.MsgType;
 import com.vincent.lwx.netty.msg.PingMsg;
 import com.vincent.lwx.netty.msg.PushMsg;
+import com.vincent.lwx.netty.msg.SystemMsg;
+import com.vincent.lwx.util.SystemMsgUtils;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -63,6 +65,23 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
 				}else{
 					System.out.println("NettyServerHandler-->没有待推送消息");
 				}
+				//检查是否有未推送的系统消息
+				System.out.println("检查"+loginMsg.getPhoneNum()+"有没有带推送的系统消息");
+				List<SystemMsg> systemMsg = SystemMsgUtils.getNoSendSystemMsg(loginMsg.getPhoneNum());
+				if(systemMsg!=null){
+					for(SystemMsg msg:systemMsg){
+						System.out.println("msg.getPhoneNum-->"+msg.getPhoneNum());
+						PushServer.push(msg);
+						//把这条消息的状态改为已推送
+						if(SystemMsgUtils.alterSystemMsgStatus(msg)){
+							System.out.println("装填已修改");
+						}else{
+							System.out.println("修改失败了");
+						}
+					}
+				}else{
+					System.out.println("没有未推送的系统消息");
+				}
 			}
         } else {
             if (NettyChannelMap.get(baseMsg.getPhoneNum()) == null) {
@@ -76,7 +95,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
                 PingMsg pingMsg = (PingMsg) baseMsg;
                 PingMsg replyPing = new PingMsg();
                 NettyChannelMap.get(pingMsg.getPhoneNum()).writeAndFlush(replyPing);
-                System.out.println("收到客户端:"+pingMsg.getPhoneNum()+"PING类型" 
+                System.out.println("收到客户端:"+pingMsg.getPhoneNum()+" PING类型" 
                 		+ new Date());
                 break;
             case PUSH:

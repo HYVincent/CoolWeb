@@ -18,10 +18,11 @@
     	delete from family_list where phone = #{phone} and familyPhone = #{familyPHone}
     </delete>
     
-    <!-- 获取某一个信息 -->
-    <select id="selectFamilyOne" parameterType="Map" resultType="com.vincent.lwx.bean.Family">
-    	select * from family_list where phone = #{phone} and familyPhone = #{familyPhone}
+    <!-- 下面的查询方法好像有问题，再写一次好了 -->
+    <select id="queryIsFamily" parameterType="Map" resultType="com.vincent.lwx.bean.Family">
+    	select *from family_list where phone = #{phone} and familyPhone = #{familyPhone}
     </select>
+    
     
     <!-- 获取所有 -->
     <select id="selectFamilyAll" parameterType="String" resultType="com.vincent.lwx.bean.Family">

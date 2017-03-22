@@ -43,6 +43,11 @@ public class Family implements Serializable{
 	 */
 	private String time;
 	
+	/**
+	 * 家人头像url
+	 */
+	private String head;
+	
 }
 
 

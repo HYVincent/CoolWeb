@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vincent.lwx.dao.VersionMapping">
+
+	<!-- 版本分布情况 -->
+	<insert id="insertVersionDetail" parameterType="com.vincent.lwx.bean.Version">
+		insert into versionDetail(phone,version,time,android_version,phoneModel) values(
+			#{phone},
+			#{version},
+			#{time},
+			#{android_version},
+			#{phoneModel}
+		)
+	</insert>
+	
+	<!-- 更新版本信息 -->
+	<update id="updateVersion" parameterType="Map">
+		update versionDetail set version = #{version},
+			time = #{time},
+			android_version=#{android_version},
+			phoneModel = #{phoneModel} where phone = #{phone}
+	</update>
+	
+	<select id="getVersionInfo" parameterType="String"
+		resultType="com.vincent.lwx.bean.Version">
+		select * from versionDetail where phone = #{phone}
+	</select>
+	
+</mapper>

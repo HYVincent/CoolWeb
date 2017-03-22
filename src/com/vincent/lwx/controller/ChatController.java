@@ -51,8 +51,8 @@ public class ChatController {
 		try {
 			ChatMsg chatMsg = new ChatMsg();
 			chatMsg.setType(MsgType.CHAT);
-			chatMsg.setAsk_phone(phone);
-			chatMsg.setPhoneNum(ask_phone);
+			chatMsg.setAsk_phone(ask_phone);
+			chatMsg.setPhoneNum(phone);
 			chatMsg.setChatContent(chatContent);
 			chatMsg.setMsgType("0");
 			boolean status = PushServer.push(chatMsg);
@@ -166,9 +166,6 @@ public class ChatController {
 			map.put("phoneNum", phone);
 			map.put("fromPhone", familyPhone);
 			map.put("msgContent", msgContent);
-			// AskMessage a =selectItemAskMsg(phone, familyPhone, msgContent);
-			// System.out.println("phoneNum-->"+a.getPhoneNum() +"
-			// FromPhone-->"+ a.getFromPhone());
 			SqlSession sqlSession = MyBatisUtils.getSqlSession();
 			System.out.println("map.fromPhone=" + map.get("fromPhone"));
 			sqlSession.update(alterRemark, map);
@@ -180,6 +177,7 @@ public class ChatController {
 			f.setFamilyPhone(familyPhone);
 			f.setRemark(familyPhone);
 			f.setTime(DateUtils.getCurrentTimeStr());
+//			f.setHead(UserUtils.selectUserOne(familyPhone).getHead());
 			SqlSession sqlSession2 = MyBatisUtils.getSqlSession();
 			sqlSession2.insert(add, f);
 			MyBatisUtils.commitTask(sqlSession2);
@@ -187,6 +185,7 @@ public class ChatController {
 			f2.setPhone(familyPhone);
 			f2.setFamilyPhone(phone);
 			f2.setRemark(phone);
+//			f2.setHead(UserUtils.selectUserOne(phone).getHead());
 			f2.setTime(DateUtils.getCurrentTimeStr());
 			SqlSession sqlSession3 = MyBatisUtils.getSqlSession();
 			sqlSession3.insert(add, f2);
@@ -206,6 +205,35 @@ public class ChatController {
 		}
 	}
 
+	/**
+	 * 查询是否是家人
+	 * @param phone
+	 * @param familyPhone
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value="hasFamily",method =RequestMethod.POST)
+	public void hasFamily(@RequestParam("phone")String phone,@RequestParam("familyPhone")String familyPhone,HttpServletRequest request,HttpServletResponse response){
+		try{
+			String sql = "com.vincent.lwx.dao.FamilyMapping.queryIsFamily";
+			Map<String, String> map = new HashMap<>();
+			map.put("phone", phone);
+			map.put("familyPhone", familyPhone);
+			SqlSession sqlSession = MyBatisUtils.getSqlSession();
+			Family family = sqlSession.selectOne(sql, map);
+			if(family!=null){
+				ResponseUtils.renderJsonDataSuccess(response, "已添加");
+			}else{
+				ResponseUtils.renderJsonDataFail(response, ServiceStatus.RUNTIME_EXCEPTION, "未添加");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION,
+					ServiceStatus.SERVICE_EXCEPTION_TEXT);
+		}
+	}
+	
+	
 	/**
 	 * 删除一个 删除一边的
 	 * 
@@ -271,16 +299,15 @@ public class ChatController {
 	 * @throws Exception
 	 */
 	public Family getFamilyOne(String phone, String familyPhone) throws Exception {
-		String sql = "com.vincent.lwx.dao.FamilyMapping.selectFamilyOne";
+		String sql = "com.vincent.lwx.dao.FamilyMapping.queryIsFamily";
 		Map<String, String> map = new HashMap<>();
 		map.put("phone", phone);
 		map.put("familyPhone", familyPhone);
 		SqlSession sqlSession = MyBatisUtils.getSqlSession();
-		Family f = sqlSession.selectOne(sql, map);
-		
-		if (f != null) {
-			return f;
-		} else {
+		Family family = sqlSession.selectOne(sql, map);
+		if(family!=null){
+			return family;
+		}else{
 			return null;
 		}
 	}

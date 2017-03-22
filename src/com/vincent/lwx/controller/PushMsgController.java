@@ -23,14 +23,14 @@ import com.vincent.lwx.util.ResponseUtils;
 * @version V1.0   
 */
 @Controller
-public class TestPush {
+public class PushMsgController {
 	
 	/**
 	 * 请求推送消息
 	 * @param push
 	 */
 	@RequestMapping(value = "push",method=RequestMethod.POST)
-	public void testPush(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
+	public void PushToPhone(@RequestParam("phone")String phone,HttpServletRequest request,HttpServletResponse response){
 		try{
 			System.out.println("推送手机号码："+phone);
 			PushMsg pushMsg = new PushMsg();
@@ -56,7 +56,7 @@ public class TestPush {
 	 * @param response
 	 */
 	@RequestMapping(value = "pushAllUser",method = RequestMethod.POST)
-	public void testPushMsgToAllUser(@RequestParam("commonMsg")String commonMsg,HttpServletRequest request,HttpServletResponse response){
+	public void PushMsgToAllUser(@RequestParam("commonMsg")String commonMsg,HttpServletRequest request,HttpServletResponse response){
 		try{
 			PushMsg pushMsg = new PushMsg();
 			pushMsg.setContent(commonMsg);
@@ -72,6 +72,18 @@ public class TestPush {
 			e.printStackTrace();
 			ResponseUtils.renderJsonDataFail(response, ServiceStatus.SERVICE_EXCEPTION, ServiceStatus.SERVICE_EXCEPTION_TEXT);
 		}
+	}
+	
+	
+	/**
+	 * test
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "test",method = RequestMethod.GET)
+	public String test(HttpServletRequest request,HttpServletResponse response){
+		return "lwx";
 	}
 }
 

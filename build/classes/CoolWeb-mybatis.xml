@@ -23,6 +23,8 @@
 	    <mapper resource="com/vincent/lwx/dao/UserDiaryMapping.xml"/>
 	    <mapper resource="com/vincent/lwx/dao/UserMapping.xml"/>
 	    <mapper resource="com/vincent/lwx/dao/FamilyMapping.xml"/>
+	    <mapper resource="com/vincent/lwx/dao/VersionMapping.xml"/>
+	    <mapper resource="com/vincent/lwx/dao/SystemMsgMapping.xml"/>
 	</mappers>
 	
 </configuration>

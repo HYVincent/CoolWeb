@@ -18,7 +18,10 @@
         	where phone = #{phone}
     </update>
     
-   
+    <!-- 修改头像 -->
+   <update id="updateUserHead" parameterType="Map">
+   		 update user set head = #{imageUrl} where phone = #{phone}
+   </update>
     
     <!--一次修改多条记录 update user set nickname='vincent',head='null',sex='男',birthday='1992-04-12',live_status='今天在家写代码' where phone = '18696855784'; -->
     <update id="updateUserInfo" parameterType="com.vincent.lwx.bean.User">
@@ -42,5 +45,11 @@
     <select id="searchLikeFamily" parameterType="String" resultType="Map">
     	select * from user where phone like #{phone}
     </select>
+    
+    <!-- 查询所有手机号码 -->
+    <select id="selectAllUserPhone" resultType="String">
+    	select phone from user
+    </select>
+    
     
 </mapper>
